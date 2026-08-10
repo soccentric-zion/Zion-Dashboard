@@ -3,28 +3,12 @@ name = "zion-contract-tests"
 version = "0.1.0"
 description = "Zion Dashboard → Server REST/SSE contract tests"
 requires-python = ">=3.11"
-dependencies = [
-    "pytest>=8.0",
-    "pytest-timeout>=2.3",
-    "httpx>=0.27",           # sync + async HTTP client
-    "sseclient-py>=1.8",     # Server-Sent Events
-]
-
-[project.optional-dependencies]
-dev = [
-    "pytest-cov>=5.0",
-    "ruff>=0.4",
-]
-
-[tool.pytest.ini_options]
+dependencies = [ "pytest>=8.0", "pytest-timeout>=2.3", "httpx>=0.27", # sync + async HTTP client "sseclient-py>=1.8", # Server-Sent Events
+] [project.optional-dependencies]
+dev = [ "pytest-cov>=5.0", "ruff>=0.4",
+] [tool.pytest.ini_options]
 timeout = 30
-markers = [
-    "smoke: fast sanity checks (health, modules list)",
-    "runs: run lifecycle tests (create, poll, results)",
-    "sse: Server-Sent Events stream tests",
-    "settings: settings/retention endpoint tests",
-]
-
-[build-system]
+markers = [ "smoke: fast sanity checks (health, modules list)", "runs: run lifecycle tests (create, poll, results)", "sse: Server-Sent Events stream tests", "settings: settings/retention endpoint tests",
+] [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
