@@ -1,0 +1,69 @@
+@AGENTS.md
+
+# Local Do/Don't
+
+## Do
+- After fixing the ESLint baseline (issue #40 / PR #41), the §9a validation gate
+  for code changes is `cd webui && npx tsc --noEmit && npm test -- --run && npm run lint`
+  followed by `make build` at the repo root. The repo Makefile delegates to the
+  webui Makefile; run it from the repo root.
+- For "setState in useEffect for run-reset" patterns: useEffect is the correct
+  primitive. Add an `// eslint-disable-next-line react-hooks/set-state-in-effect`
+  comment adjacent to the first setState, with a comment explaining why
+  (external change → reset internal state, not derive).
+- For stream-loop accumulator mutations: use a local `const accumulatedRef = { current: "" }`
+  object instead of a captured `let accumulated = ""`. Snapshot `.current` into
+  the setState functional updater. This sidesteps `react-hooks/immutability`.
+- For SSE source lifecycle, bind the source to the *stable* identifier (e.g.
+  `activeRunId`), not to a derived flag like `isRunning`. A handler that calls
+  `setIsRunning` re-runs the effect and closes the source, dropping late
+  events. Use a `sourceRef` and close the source only when the identifier
+  becomes null.
+- For cross-context state, split a single AppShellContext into stable-actions
+  and state slices so consumers that only dispatch don't re-render on state
+  changes. Keep the `useAppShell()` union hook for backwards compatibility.
+- For `localStorage`-backed preferences, subscribe to the `storage` event in a
+  `useEffect` keyed on the pref key. The `storage` event only fires for *other*
+  documents, so the in-tab setter never re-fires. `newValue === null` means the
+  other tab cleared the key — snap to the default.
+- For queryKey construction from URL params, use the *raw* param (not the
+  decoded one) so that two URLs that decode to the same id don't silently
+  collide, and so that two ids differing only by encoding stay distinct.
+- For modal dialogs, add `role="dialog"`, `aria-modal="true"`,
+  `aria-labelledby`, move initial focus into the dialog on open, trap Tab/Shift+Tab
+  inside, and return focus to the trigger on close.
+- For status indicators, wrap the indicator in `role="status" aria-live="polite"`
+  with an explicit `aria-label`; set `aria-hidden="true"` on the visual cue
+  span so screen readers read only the text.
+- For destructive badge contrast, ensure the destructive token hits WCAG AA
+  4.5:1 against its foreground in both themes. Lift destructive lightness and
+  pair with white in light mode; in dark mode use a lighter destructive with a
+  dark foreground.
+- For run mutations that chain `createConfig` + `createRun`, wrap the two calls
+  separately. If `createRun` fails after `createConfig` succeeded, invalidate
+  the configs cache and throw an explicit error naming the orphan config id so
+  the operator knows to clean it up.
+- Use `gh issue create --body-file` for any body containing backticks (per
+  root-tier `project-managers/CLAUDE.md` "Backticks in gh issue create bodies").
+- This repo's label set is minimal (bug, documentation, duplicate, enhancement,
+  good first issue, help wanted, invalid, question, wontfix). Don't add
+  category labels like `concurrency`, `a11y`, etc. — they don't exist and
+  filing fails. Just `--label bug`.
+- This repo has no `in-progress` label. Use `gh issue comment` to mark "Started"
+  instead of `gh issue edit --add-label "in-progress"`.
+
+## Don't
+- Don't `cd webui && npm test` — there's no `test` script in package.json. Use
+  `npx vitest` / `npm test -- --run` directly.
+- Don't `npm run type-check` — there's no such script. Use `npx tsc --noEmit`.
+- Don't assume `gh issue edit --add-label "in-progress"` works here.
+- Don't try to push directly to `develop`. Always go through a branch + PR.
+- Don't close the SSE source in an event handler — the effect's cleanup owns
+  the source lifecycle. EventSource auto-reconnects on transient blips; closing
+  on error drops the next batch of events.
+- Don't wrap a value-only setter call in an updater arrow (`setX(() => value)`)
+  unless you're deriving from previous state. The wrapper reads as a state
+  derivation and adds a closure per call.
+- Don't write `JSON.parse(localStorage.getItem(key) ?? '"default"')` — the
+  implicit JSON-encoded-string fallback is fragile. Use a typed read with a
+  type guard and an explicit default value.

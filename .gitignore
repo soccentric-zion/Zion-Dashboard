@@ -1,0 +1,9 @@
+# Python bytecode caches (contract-tests/ is pytest-based).
+__pycache__/
+*.pyc
+*.pyo
+
+# Node (webui/ has its own, more thorough .gitignore; this is a repo-root
+# backstop in case files end up outside it).
+node_modules/
+.next/
