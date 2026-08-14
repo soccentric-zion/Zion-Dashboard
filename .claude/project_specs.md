@@ -1,4 +1,4 @@
-# Zion-Dashboard — specs Remote: `git@github.com:SiliconCentric/Zion-Dashboard.git`
+# Zion-Dashboard — specs Remote: `git@github.com:soccentric-zion/Zion-Dashboard.git`
 Stack: node. A standalone dashboard UI leaf. Runs anywhere; not part of the on-device image. ## Layout * `webui/` — Next.js app-router frontend. Has its own `package.json`, separate from the root one.
 * `contract-tests/` — pytest suite with its own Makefile. Python, not JS.
 * `docker/` — packaging. ## Coupling * **Not proto-coupled to Zion-HAL.** Reads from Zion-Server over HTTP/SSE.
