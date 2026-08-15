@@ -52,24 +52,24 @@ clean:
 
 ## docker-build — build the Docker image
 docker-build:
-	$(MAKE) -f docker/Makefile build IMAGE=$(IMAGE) TAG=$(TAG)
+	$(MAKE) -C docker build IMAGE=$(IMAGE) TAG=$(TAG)
 
 ## docker-run — run the container (detached)
 docker-run:
-	$(MAKE) -f docker/Makefile run IMAGE=$(IMAGE) TAG=$(TAG) PORT=$(PORT)
+	$(MAKE) -C docker run IMAGE=$(IMAGE) TAG=$(TAG) PORT=$(PORT)
 
 ## docker-stop — stop and remove the container
 docker-stop:
-	$(MAKE) -f docker/Makefile stop IMAGE=$(IMAGE)
+	$(MAKE) -C docker stop IMAGE=$(IMAGE)
 
 ## docker-logs — tail container logs
 docker-logs:
-	$(MAKE) -f docker/Makefile logs IMAGE=$(IMAGE)
+	$(MAKE) -C docker logs IMAGE=$(IMAGE)
 
 ## docker-shell — open a shell inside the running container
 docker-shell:
-	$(MAKE) -f docker/Makefile shell IMAGE=$(IMAGE)
+	$(MAKE) -C docker shell IMAGE=$(IMAGE)
 
 ## docker-clean — remove the image
 docker-clean:
-	$(MAKE) -f docker/Makefile clean IMAGE=$(IMAGE) TAG=$(TAG)
+	$(MAKE) -C docker clean IMAGE=$(IMAGE) TAG=$(TAG)
