@@ -37,6 +37,10 @@ Run the repository contract-test command after inspecting its local README/confi
 ## Limitations
 
 The top-level scan cannot establish which screens are complete or whether the dashboard works against a live server. Browser, accessibility, responsive-layout, authentication, SSE reconnection, and production deployment checks remain manual.
+
+## Detailed Reference
+
+The retained documentation index below contains the repository's linked UI requirements, API findings, audit, and architecture guidance.
 # Zion-Dashboard TODO: add a description for Zion-Dashboard. ## Documentation - [webui/README.md](webui/README.md) — Web UI package (Next.js operator console).
 - [docs/req.md](docs/req.md) — original design/build prompt for the Web UI.
 - [docs/WEB_FINDINGS.md](docs/WEB_FINDINGS.md) — verified Server REST/SSE API inventory.
