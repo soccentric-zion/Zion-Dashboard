@@ -13,6 +13,8 @@
 #   clean        remove .next build artefacts
 # ──────────────────────────────────────────────────────────────────────────────
 
+.DEFAULT_GOAL := help
+
 WEBUI    := webui
 PORT     ?= 3010
 IMAGE    ?= zion-dashboard
@@ -24,52 +26,57 @@ TAG      ?= latest
 
 # ── Local dev ─────────────────────────────────────────────────────────────────
 
-## install — install npm dependencies
-install:
+install: ## install npm dependencies
 	cd $(WEBUI) && npm install
 
-## dev — start Next.js development server
-dev:
+dev: ## start Next.js development server
 	cd $(WEBUI) && npm run dev
 
-## build — build the Next.js production bundle
-build:
+build: ## build the Next.js production bundle
 	cd $(WEBUI) && npm run build
 
-## test — run Vitest unit tests
-test:
+test: ## run Vitest unit tests
 	cd $(WEBUI) && npm test
 
-## lint — run ESLint
-lint:
+lint: ## run ESLint
 	cd $(WEBUI) && npm run lint
 
-## clean — remove build artefacts
-clean:
+clean: ## remove build artefacts
 	rm -rf $(WEBUI)/.next
 
 # ── Docker ────────────────────────────────────────────────────────────────────
 
-## docker-build — build the Docker image
-docker-build:
+docker-build: ## build the Docker image
 	$(MAKE) -C docker build IMAGE=$(IMAGE) TAG=$(TAG)
 
-## docker-run — run the container (detached)
-docker-run:
+docker-run: ## run the container (detached)
 	$(MAKE) -C docker run IMAGE=$(IMAGE) TAG=$(TAG) PORT=$(PORT)
 
-## docker-stop — stop and remove the container
-docker-stop:
+docker-stop: ## stop and remove the container
 	$(MAKE) -C docker stop IMAGE=$(IMAGE)
 
-## docker-logs — tail container logs
-docker-logs:
+docker-logs: ## tail container logs
 	$(MAKE) -C docker logs IMAGE=$(IMAGE)
 
-## docker-shell — open a shell inside the running container
-docker-shell:
+docker-shell: ## open a shell inside the running container
 	$(MAKE) -C docker shell IMAGE=$(IMAGE)
 
-## docker-clean — remove the image
-docker-clean:
+docker-clean: ## remove the image
 	$(MAKE) -C docker clean IMAGE=$(IMAGE) TAG=$(TAG)
+
+# ── Fleet-standard aliases ────────────────────────────────────────────────────
+# Same verbs mean the same thing in every repo; these forward to this
+# repo's own targets rather than duplicating their recipes.
+.PHONY: run
+run: dev ## Alias for dev
+
+# ── Help ──────────────────────────────────────────────────────────────────────
+# Targets are self-documenting: text after `## ` on a target line is picked up
+# by `make help` automatically, so the listing can never drift from the rules.
+.PHONY: help
+help: ## Show this help
+	@printf '\n  \033[1m%s\033[0m\n' 'Zion-Dashboard'
+	@printf '  Usage: make <target> [VAR=value ...]\n'
+	@printf '\n'
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z0-9_.\/-]+:.*?## / { printf "    \033[36m%-24s\033[0m %s\n", $$1, $$2 }' $(MAKEFILE_LIST)
+	@printf '\n'
