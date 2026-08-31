@@ -26,10 +26,8 @@ Zion-Dashboard is the operator-console repository for the Zion fleet-management 
 ## Tests and Commands
 
 ```bash
-cd webui
-npm install
-npm test
-npm run build
+make build           # Docker image build (fleet default)
+cd webui && npm test
 ```
 
 Run the repository contract-test command after inspecting its local README/config. Exact scripts are not invented because the top-level README does not state them.

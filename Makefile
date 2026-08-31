@@ -3,7 +3,7 @@
 #
 # Targets:
 #   dev          start the Next.js dev server (hot-reload, port 3010)
-#   build        build the Next.js production bundle
+#   build        build in Docker (alias for docker-build)
 #   test         run Vitest unit tests
 #   lint         run Next.js ESLint
 #   docker-build build the Docker image
@@ -32,8 +32,7 @@ install: ## install npm dependencies
 dev: ## start Next.js development server
 	cd $(WEBUI) && npm run dev
 
-build: ## build the Next.js production bundle
-	cd $(WEBUI) && npm run build
+build: docker-build ## Build in Docker (fleet standard)
 
 test: ## run Vitest unit tests
 	cd $(WEBUI) && npm test
